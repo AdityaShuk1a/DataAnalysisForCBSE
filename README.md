@@ -24,11 +24,7 @@ This project analyzes shark attack data to uncover patterns and trends related t
 
    - **Purpose**: Visualize the number of shark attacks annually over time since 1900 to identify long-term trends and patterns.
 
-6. **Geographic Distribution of Shark Attacks**
-
-   - **Purpose**: Identify countries with the highest reports of shark attacks and pinpoint specific areas and locations within those countries that are most affected.
-
-7. **Commonly Injured Body Parts**
+6. **Commonly Injured Body Parts**
 
    - **Purpose**: Determine which body parts are most frequently injured in shark attacks through text analysis of the Injury column.
 

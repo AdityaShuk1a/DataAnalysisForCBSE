@@ -104,6 +104,17 @@ def assign_severity(row):
 df['Body_Part'] = df['Injury'].apply(extract_body_part)
 df['Injury_Type'] = df['Injury'].apply(extract_injury_type)
 df['Severity'] = df.apply(assign_severity, axis=1)
+
+body_parts_df = df['Body_Part'].str.split(', ', expand=True).stack().reset_index(drop=True).value_counts().reset_index()
+body_parts_df.columns = ['Body_Part', 'Count']
+plt.figure(figsize=(8, 5))
+sns.barplot(data=body_parts_df, x='Body_Part', y='Count', palette="viridis")
+plt.title('Body Parts Affected')
+plt.xlabel('Body Part')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 df['Year'] = pd.to_numeric(df['Year'], errors='coerce')
 df['Month'] = df['Date'].dt.month
@@ -169,12 +180,25 @@ bins = [0, 18, 35, 50, 100]
 labels = ['0-18', '19-35', '36-50', '51+']
 df['Age_Group'] = pd.cut(df['Age'], bins=bins, labels=labels, right=False)
 
+df['Sex '] = df['Sex '].str.strip().str.upper()
+print(df['Sex '])
+gender_age = df.groupby(['Sex ', 'Age_Group']).size().reset_index(name='Count')
+print("\nDistribution by Gender and Age Group:")
+print(gender_age)
+
+plt.figure(figsize=(8, 6))
+sns.barplot(data=gender_age, x='Age_Group', y='Count', hue='Sex ', palette="coolwarm")
+plt.title('Shark Attacks by Gender and Age Group')
+plt.xlabel('Age Group')
+plt.ylabel('Attack Count')
+plt.show()
 df['Fatal_Flag'] = df['Fatal (Y/N)'].apply(lambda x: 1 if str(x).strip().upper() == 'Y' else 0)
 fatality_rate = df.groupby(['Country', 'Activity'])['Fatal_Flag'].mean().reset_index()
 fatality_rate['Fatality_Rate (%)'] = fatality_rate['Fatal_Flag'] * 100
 print("\nFatality Rate by Country and Activity:")
 print(fatality_rate.head(10))
 
+# 3.2 Common Shark Species by Region
 df['Species'] = df['Species '].str.strip().str.title()
 species_by_region = df.groupby('Country')['Species'].agg(lambda x: x.value_counts().index[0] if not x.isnull().all() else np.nan).reset_index()
 species_by_region.columns = ['Country', 'Most_Common_Species']
